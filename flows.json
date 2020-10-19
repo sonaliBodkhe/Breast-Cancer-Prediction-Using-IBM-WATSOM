@@ -1,0 +1,316 @@
+[
+    {
+        "id": "e871e90b.18d3d8",
+        "type": "tab",
+        "label": "Flow 7",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "a2a06fbe.47d6e",
+        "type": "ui_form",
+        "z": "e871e90b.18d3d8",
+        "name": "",
+        "label": "",
+        "group": "3bfc3902.f58296",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "options": [
+            {
+                "label": "radius_mean",
+                "value": "rm",
+                "type": "number",
+                "required": true,
+                "rows": null
+            },
+            {
+                "label": "perimeter_mean",
+                "value": "pm",
+                "type": "number",
+                "required": true,
+                "rows": null
+            },
+            {
+                "label": "area_mean",
+                "value": "am",
+                "type": "number",
+                "required": true,
+                "rows": null
+            },
+            {
+                "label": "compactness_mean",
+                "value": "cm",
+                "type": "number",
+                "required": true,
+                "rows": null
+            },
+            {
+                "label": "concavity_mean",
+                "value": "cnm",
+                "type": "number",
+                "required": true,
+                "rows": null
+            },
+            {
+                "label": "concave points_mean",
+                "value": "cpm",
+                "type": "number",
+                "required": true,
+                "rows": null
+            }
+        ],
+        "formValue": {
+            "rm": "",
+            "pm": "",
+            "am": "",
+            "cm": "",
+            "cnm": "",
+            "cpm": ""
+        },
+        "payload": "",
+        "submit": "submit",
+        "cancel": "cancel",
+        "topic": "",
+        "x": 50,
+        "y": 180,
+        "wires": [
+            [
+                "95515ce1.1ad45",
+                "10188a50.c32d06"
+            ]
+        ]
+    },
+    {
+        "id": "95515ce1.1ad45",
+        "type": "debug",
+        "z": "e871e90b.18d3d8",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 210,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "10188a50.c32d06",
+        "type": "function",
+        "z": "e871e90b.18d3d8",
+        "name": "pre-token",
+        "func": "global.set(\"rm\",msg.payload.rm)\nglobal.set(\"pm\",msg.payload.pm)\nglobal.set(\"am\",msg.payload.am)\nglobal.set(\"cm\",msg.payload.cm)\nglobal.set(\"cnm\",msg.payload.cnm)\nglobal.set(\"cpm\",msg.payload.cpm)\nvar apikey=\"RFYhTBDTo4dStEFnlSGtA95D010aAOxg0NH2S6F7y122\";\nmsg.headers={\"content-type\":\"application/x-www-form-urlencoded\"}\nmsg.payload={\"grant_type\":\"urn:ibm:params:oauth:grant-type:apikey\",\"apikey\":apikey}\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 200,
+        "y": 120,
+        "wires": [
+            [
+                "d8a176bb.f923e8"
+            ]
+        ]
+    },
+    {
+        "id": "d8a176bb.f923e8",
+        "type": "http request",
+        "z": "e871e90b.18d3d8",
+        "name": "",
+        "method": "POST",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "https://iam.cloud.ibm.com/identity/token",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "x": 330,
+        "y": 200,
+        "wires": [
+            [
+                "d3e518c.0253ce8",
+                "65185361.a924dc"
+            ]
+        ]
+    },
+    {
+        "id": "d3e518c.0253ce8",
+        "type": "debug",
+        "z": "e871e90b.18d3d8",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 470,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "65185361.a924dc",
+        "type": "function",
+        "z": "e871e90b.18d3d8",
+        "name": "Pre Prediction",
+        "func": "var rm = global.get(\"rm\")\nvar pm = global.get(\"pm\")\nvar am = global.get(\"am\")\nvar cm = global.get(\"cm\")\nvar cnm = global.get(\"cnm\")\nvar cpm = global.get(\"cpm\")\nvar token=msg.payload.access_token\nmsg.headers={'Content-Type': 'application/json',\"Authorization\":\"Bearer \"+token,\"Accept\":\"application/json\"}\nmsg.payload={\"input_data\":[{\"fields\":[\"id\",\"radius_mean\",\"texture_mean\",\"perimeter_mean\",\"area_mean\",\"smoothness_mean\",\"compactness_mean\",\"concavity_mean\",\"concave points_mean\",\"symmetry_mean\",\"fractal_dimension_mean\",\"radius_se\",\"texture_se\",\"perimeter_se\",\"area_se\",\"smoothness_se\",\"compactness_se\",\"concavity_se\",\"concave points_se\",\"symmetry_se\",\"fractal_dimension_se\",\"radius_worst\",\"texture_worst\",\"perimeter_worst\",\"area_worst\",\"smoothness_worst\",\"compactness_worst\",\"concavity_worst\",\"concave points_worst\",\"symmetry_worst\",\"fractal_dimension_worst\",\"Unnamed: 32\"],\"values\":[[null,rm,null,pm,am,null,cm,cnm,cpm,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null]]}]}\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 460,
+        "y": 80,
+        "wires": [
+            [
+                "e1e9d313.bde21"
+            ]
+        ]
+    },
+    {
+        "id": "e1e9d313.bde21",
+        "type": "http request",
+        "z": "e871e90b.18d3d8",
+        "name": "",
+        "method": "POST",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "https://us-south.ml.cloud.ibm.com/ml/v4/deployments/3edf5ee5-9660-48f0-a5a1-accc145a5098/predictions?version=2020-09-01",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "x": 590,
+        "y": 200,
+        "wires": [
+            [
+                "5ae30fbc.cab8",
+                "f56b0c6e.02f32"
+            ]
+        ]
+    },
+    {
+        "id": "5ae30fbc.cab8",
+        "type": "debug",
+        "z": "e871e90b.18d3d8",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 690,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "685e47a7.412ee8",
+        "type": "inject",
+        "z": "e871e90b.18d3d8",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 80,
+        "y": 40,
+        "wires": [
+            [
+                "10188a50.c32d06"
+            ]
+        ]
+    },
+    {
+        "id": "abc90533.3cdfc8",
+        "type": "debug",
+        "z": "e871e90b.18d3d8",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 810,
+        "y": 20,
+        "wires": []
+    },
+    {
+        "id": "f56b0c6e.02f32",
+        "type": "function",
+        "z": "e871e90b.18d3d8",
+        "name": "Parsing",
+        "func": "msg.payload=msg.payload.predictions[0].values[0][0]\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 680,
+        "y": 100,
+        "wires": [
+            [
+                "abc90533.3cdfc8",
+                "50f4301d.5b382"
+            ]
+        ]
+    },
+    {
+        "id": "50f4301d.5b382",
+        "type": "ui_text",
+        "z": "e871e90b.18d3d8",
+        "group": "3bfc3902.f58296",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "Prediction",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "x": 820,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "3bfc3902.f58296",
+        "type": "ui_group",
+        "z": "",
+        "name": "Breast Cancer Prediction",
+        "tab": "47a95329.022c7c",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": false
+    },
+    {
+        "id": "47a95329.022c7c",
+        "type": "ui_tab",
+        "z": "",
+        "name": "Home",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    }
+]
